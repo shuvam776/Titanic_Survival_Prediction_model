@@ -7,34 +7,15 @@ import numpy as np
 app = Flask(__name__)
 import pandas as pd
 
-def Formatter(X):
-    X_out = X.copy()
+from preprocessing import Formatter
+from pathlib import Path
+import pickle
 
-    if "Name" in X_out.columns:
-        X_out["Title"] = (
-            X_out["Name"]
-            .str.extract(r',\s*([^\.]+)\.')
-            .fillna("Rare")
-        )
+BASE_DIR = Path(__file__).resolve().parent
 
-        # Optional: Group rare titles exactly like during training
-        X_out["Title"] = X_out["Title"].replace(
-            [
-                "Lady","Countess","Capt","Col","Don","Dr","Major",
-                "Rev","Sir","Jonkheer","Dona"
-            ],
-            "Rare"
-        )
+MODEL_PATH = BASE_DIR / "model_pipe_app.pkl"
 
-        X_out["Title"] = X_out["Title"].replace({
-            "Mlle": "Miss",
-            "Ms": "Miss",
-            "Mme": "Mrs"
-        })
-
-    return X_out
-model = pickle.load(open("model_pipe.pkl", "rb"))
-
+model = pickle.load(open(MODEL_PATH, "rb"))
 print("Model expects:", model.n_features_in_)
 
 @app.route("/", methods=["GET", "POST"])
@@ -77,7 +58,6 @@ def home():
             }])
 
             print(features)
-
             pred = model.predict(features)[0]
 
             # Probability
