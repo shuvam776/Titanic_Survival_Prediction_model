@@ -8,6 +8,9 @@ app = Flask(__name__)
 import pandas as pd
 
 from preprocessing import Formatter
+
+
+
 from pathlib import Path
 import pickle
 
@@ -107,4 +110,4 @@ if hasattr(model, "feature_names_in_"):
 
 # print("App columns:", df.columns)
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
