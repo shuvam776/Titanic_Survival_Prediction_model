@@ -1,82 +1,130 @@
+import random
+
 from flask import Flask, render_template, request
 import pickle
 import numpy as np
 
 app = Flask(__name__)
+import pandas as pd
 
-# Load model and scaler
-model = pickle.load(open("model.pkl", "rb"))
-scaler = pickle.load(open("scaler.pkl", "rb"))
+def Formatter(X):
+    X_out = X.copy()
+
+    if "Name" in X_out.columns:
+        X_out["Title"] = (
+            X_out["Name"]
+            .str.extract(r',\s*([^\.]+)\.')
+            .fillna("Rare")
+        )
+
+        # Optional: Group rare titles exactly like during training
+        X_out["Title"] = X_out["Title"].replace(
+            [
+                "Lady","Countess","Capt","Col","Don","Dr","Major",
+                "Rev","Sir","Jonkheer","Dona"
+            ],
+            "Rare"
+        )
+
+        X_out["Title"] = X_out["Title"].replace({
+            "Mlle": "Miss",
+            "Ms": "Miss",
+            "Mme": "Mrs"
+        })
+
+    return X_out
+model = pickle.load(open("model_pipe.pkl", "rb"))
 
 print("Model expects:", model.n_features_in_)
-print("Scaler expects:", scaler.n_features_in_)
 
 @app.route("/", methods=["GET", "POST"])
 def home():
 
     prediction = None
+    survival_prob = None
+    death_prob = None
+    passenger = None
 
     if request.method == "POST":
 
         try:
+            passengerid = random.randint(1, 1000)
 
             pclass = int(request.form["pclass"])
+            name = request.form["name"]
+            sex = request.form["sex"]
             age = float(request.form["age"])
             sibsp = int(request.form["sibsp"])
             parch = int(request.form["parch"])
+            ticket = request.form["ticket"]
             fare = float(request.form["fare"])
-
-            sex = request.form["sex"]
+            cabin = request.form["cabin"]
             embarked = request.form["embarked"]
-            title = request.form["title"]
 
-            # One Hot Encoding
+            # Create DataFrame (recommended for sklearn pipelines)
+            features = pd.DataFrame([{
+                "PassengerId": passengerid,
+                "Pclass": pclass,
+                "Name": name,
+                "Sex": sex,
+                "Age": age,
+                "SibSp": sibsp,
+                "Parch": parch,
+                "Ticket": ticket,
+                "Fare": fare,
+                "Cabin": cabin,
+                "Embarked": embarked
+            }])
 
-            sex_male = 1 if sex == "male" else 0
-
-            embarked_q = 1 if embarked == "Q" else 0
-            embarked_s = 1 if embarked == "S" else 0
-
-            title_miss = 1 if title == "Miss" else 0
-            title_mr = 1 if title == "Mr" else 0
-            title_mrs = 1 if title == "Mrs" else 0
-            title_rare = 1 if title == "Rare" else 0
-
-            features = np.array([[
-                pclass,
-                age,
-                sibsp,
-                parch,
-                fare,
-                sex_male,
-                embarked_q,
-                embarked_s,
-                title_miss,
-                title_mr,
-                title_mrs,
-                title_rare
-            ]])
-
-            print("Input Shape:", features.shape)
-            print("Features:", features)
-
-            features = scaler.transform(features)
+            print(features)
 
             pred = model.predict(features)[0]
 
-            if pred == 1:
-                prediction = "You are probably gonna survive"
-            else:
-                prediction = "You are probably gonna die lol"
+            # Probability
+            if hasattr(model, "predict_proba"):
+                probs = model.predict_proba(features)[0]
+                death_prob = round(probs[0] * 100, 2)
+                survival_prob = round(probs[1] * 100, 2)
+
+            prediction = (
+                " Passenger is likely to survive"
+                if pred == 1
+                else " Passenger is unlikely to survive"
+            )
+
+            passenger = {
+                "name": name,
+                "age": age,
+                "sex": sex,
+                "class": pclass,
+                "fare": fare,
+                "embarked": embarked,
+                "cabin": cabin
+            }
 
         except Exception as e:
-            prediction = f"Error: {str(e)}"
+            prediction = f"Error: {e}"
 
     return render_template(
         "index.html",
-        prediction=prediction
+        prediction=prediction,
+        survival_prob=survival_prob,
+        death_prob=death_prob,
+        passenger=passenger
     )
+# pipeline visualization 
+
+@app.route("/pipeline")
+def pipeline():
+    return render_template("pipeline.html")
 
 
+
+# Print what the model expects
+if hasattr(model, "feature_names_in_"):
+    print("Expected columns:", model.feature_names_in_)
+
+
+# print("App columns:", df.columns)
 if __name__ == "__main__":
     app.run(debug=True)

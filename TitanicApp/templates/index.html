@@ -1,234 +1,225 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Titanic Survival Predictor</title>
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Titanic Survival Predictor</title>
+  <body>
+    <body
+      class="min-h-screen bg-gradient-to-br from-slate-950 via-blue-900 to-slate-900 flex items-center justify-center py-10 px-4"
+    >
+      <div
+        class="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+      >
+        <!-- header -->
+        <div class="bg-blue-700 text-white p-8">
+          <h1 class="text-4xl font-bold">🚢 Titanic Survival Predictor</h1>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Segoe UI", sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a, #1e3a8a);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 650px;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0px 15px 40px rgba(0,0,0,0.25);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #0f172a;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: gray;
-            margin-bottom: 25px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        input,
-        select {
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-
-        small {
-            margin-top: 5px;
-            color: gray;
-        }
-
-        .btn {
-            margin-top: 25px;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            background: rgba(0,255,0);
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .btn:hover {
-            background: rgb(0,150,0);
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            background: #f1f5f9;
-        }
-
-        @media(max-width:700px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <h1>🚢 Titanic Survival Predictor</h1>
-
-    <p class="subtitle">
-        Predict whether a passenger would survive the Titanic disaster.
-    </p>
-
-    <form method="POST">
-
-        <div class="grid">
-
-            <div class="field">
-                <label>Passenger Class</label>
-                <select name="pclass">
-                    <option value="1">1st Class (Luxury)</option>
-                    <option value="2">2nd Class</option>
-                    <option value="3">3rd Class</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label>Age</label>
-                <input
-                    type="number"
-                    name="age"
-                    min="0"
-                    max="80"
-                    placeholder="Example: 25"
-                    required>
-            </div>
-
-            <div class="field">
-                <label>Siblings / Spouse</label>
-                <input
-                    type="number"
-                    name="sibsp"
-                    min="0"
-                    max="8"
-                    placeholder="Example: 0"
-                    required>
-            </div>
-
-            <div class="field">
-                <label>Parents / Children</label>
-                <input
-                    type="number"
-                    name="parch"
-                    min="0"
-                    max="6"
-                    placeholder="Example: 0"
-                    required>
-            </div>
-
-            <div class="field">
-                <label>Fare (£)</label>
-                <input
-                    type="number"
-                    name="fare"
-                    step="0.01"
-                    min="0"
-                    max="600"
-                    placeholder="Example: 72.50"
-                    required>
-                <small>Typical range: £7 - £250</small>
-            </div>
-
-            <div class="field">
-                <label>Gender</label>
-                <select name="sex">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label>Embarked</label>
-                <select name="embarked">
-                    <option value="S">Southampton</option>
-                    <option value="C">Cherbourg</option>
-                    <option value="Q">Queenstown</option>
-                </select>
-            </div>
-
-            <div class="field">
-                <label>Title</label>
-                <select name="title">
-                    <option value="Mr">Mr (Adult Male)</option>
-                    <option value="Mrs">Mrs (Married Female)</option>
-                    <option value="Miss">Miss (Unmarried Female)</option>
-                    <option value="Rare">Rare / Other</option>
-                </select>
-            </div>
-
+          <p class="mt-2 text-blue-100">
+            Predict whether a passenger would survive using a Machine Learning
+            Pipeline.
+          </p>
         </div>
+        <!-- Form -->
 
-        <button class="btn" type="submit">
+        <form method="POST" class="p-8 bg-gray-50 rounded-b-3xl">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block mb-2 font-semibold">Passenger Class</label>
+
+              <select
+                name="pclass"
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="1">1st Class</option>
+                <option value="2">2nd Class</option>
+                <option value="3">3rd Class</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Age</label>
+
+              <input
+                type="number"
+                name="age"
+                min="0"
+                max="80"
+                placeholder="25"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Gender</label>
+
+              <select
+                name="sex"
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Fare (£)</label>
+
+              <input
+                type="number"
+                name="fare"
+                step="0.01"
+                placeholder="72.50"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Siblings / Spouse</label>
+
+              <input
+                type="number"
+                name="sibsp"
+                min="0"
+                max="8"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Parents / Children</label>
+
+              <input
+                type="number"
+                name="parch"
+                min="0"
+                max="6"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Embarked</label>
+
+              <select
+                name="embarked"
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="S">Southampton</option>
+                <option value="C">Cherbourg</option>
+                <option value="Q">Queenstown</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Passenger Name</label>
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Mr. John Smith"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Cabin</label>
+
+              <input
+                type="text"
+                name="cabin"
+                placeholder="C85"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-2 font-semibold">Ticket Number</label>
+
+              <input
+                type="text"
+                name="ticket"
+                placeholder="A/5 21171"
+                required
+                class="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="mt-8 w-full bg-blue-600 hover:bg-blue-700 transition text-white py-4 rounded-xl text-lg font-semibold shadow-lg"
+          >
             Predict Survival
-        </button>
+          </button>
+        </form>
 
-    </form>
+        {% if prediction %}
+        <div class="px-8 pb-8">
+          <div
+            class="rounded-2xl bg-blue-50 border border-blue-200 p-6 text-center"
+          >
+            <h2 class="text-xl font-bold text-blue-800">Prediction</h2>
 
-    {% if prediction %}
-        <div class="result">
-            {{ prediction }}
+            <p class="mt-2 text-2xl font-semibold">{{ prediction }}</p>
+          </div>
         </div>
-    {% endif %}
+        {% endif %} {% if survival_prob %}
+        <div class="mt-6 bg-white rounded-xl shadow p-6">
+          <h2 class="text-xl font-bold">Prediction Confidence</h2>
 
-</div>
-<script>
-if (window.history.replaceState) {
-    window.history.replaceState(null, null, window.location.href);
-}
-</script>
-</body>
+          <p class="mt-2">Survival: {{ survival_prob }}%</p>
+          <div class="w-full bg-gray-200 rounded-full h-4">
+            <div
+              class="bg-green-500 h-4 rounded-full"
+              style="width: {{ survival_prob }}%"
+            ></div>
+          </div>
+
+          <p class="mt-4">Death: {{ death_prob }}%</p>
+          <div class="w-full bg-gray-200 rounded-full h-4">
+            <div
+              class="bg-red-500 h-4 rounded-full"
+              style="width: {{ death_prob }}%"
+            ></div>
+          </div>
+        </div>
+        {% endif %}
+
+      
+        <!-- Pipeline -->
+        <details class="mx-8 mb-8 rounded-2xl border border-gray-200 shadow">
+          <summary
+            class="cursor-pointer bg-gray-50 p-5 text-xl font-semibold hover:bg-gray-100 transition"
+          >
+            ⚙️ View Machine Learning Pipeline
+          </summary>
+
+          <div class="p-6">
+            <iframe
+              src="{{ url_for('pipeline') }}"
+              class="w-full h-[500px] rounded-xl border"
+            >
+            </iframe>
+          </div>
+        </details>
+      </div>
+
+      <script>
+        if (window.history.replaceState) {
+          window.history.replaceState(null, null, window.location.href);
+        }
+      </script>
+
+      <script src="https://cdn.tailwindcss.com"></script>
+    </body>
+  </body>
 </html>
