@@ -101,6 +101,9 @@ def home():
 def pipeline():
     return render_template("pipeline.html")
 
+@app.route("/report")
+def report():
+    return render_template("report.html")
 
 
 # Print what the model expects
